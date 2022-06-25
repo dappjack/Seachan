@@ -1,0 +1,67 @@
+#+title: readme
+
+* seachan
+Welcome to Seachan
+* development
+** prerequisites
+*** dfx
+**** download the Internet Computer SDK
+#+BEGIN_SRC sh
+sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+#+END_SRC
+*** docker
+#+BEGIN_SRC sh
+sudo pacman -S docker --noconfirm
+sudo systemctl enable docker
+sudo systemctl start docker
+#+END_SRC
+*** local internet identity
+#+BEGIN_SRC sh
+cd $HOME/projects/ic/
+git clone https://github.com/dfinity/internet-identity.git
+cd internet-identity
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo ./scripts/docker-build
+cp $HOME/projects/ic/internet-identity/internet_identity.wasm $HOME/projects/ic/seachan/src/internet-identity/internet_identity.wasm
+#+END_SRC
+** setup
+*** create project directory
+#+BEGIN_SRC sh
+mkdir $HOME/projects/ic && cd !$
+git clone https://github.com/dappjack/seachan
+#+END_SRC
+*** (dev) set up new dfx project
+#+BEGIN_SRC sh
+dfx new seachan
+#+END_SRC
+*** pull seachan project
+#+BEGIN_SRC sh
+cd $HOME/projects/ic/
+git clone https://github.com/dappjack/seachan
+#+END_SRC
+*** Then, make sure you have the Internet Identity repo cloned locally, adjacent to this project.
+#+BEGIN_SRC sh
+dfx start --background --clean
+cd $HOME/projects/ic/internet-identity
+rm -rf .dfx/local
+II_FETCH_ROOT_KEY=1 II_DUMMY_CAPTCHA=1  dfx deploy --no-wallet --argument '(null)'
+pushd
+#+END_SRC
+
+** local dev notes
+*** ensure the canister IDs from .dfx/local/canister_ids.json math App and Auth canister IDs
+
+dfx stop
+killall dfx
+rm -rf $HOME/projects/ic/seachan/.dfx
+rm -rf $HOME/projects/ic/internet-identity/.dfx
+cd $HOME/projects/ic/seachan
+dfx start --background --clean
+dfx deploy
+npm start
+
+* deploy locally
+dfx deploy --no-wallet --argument '(null)'
+* deploy on the ic
+dfx deploy --network ic --no-wallet

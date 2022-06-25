@@ -1,0 +1,31 @@
+{
+  "canisters": {
+    "seachan_assets": {
+      "frontend": {
+        "entrypoint": "src/seachan_assets/src/index.html"
+      },
+      "source": [
+        "src/seachan_assets/assets",
+        "dist/seachan_assets/"
+      ],
+      "type": "assets"
+    },
+    "seachan": {
+      "main": "src/seachan/main.mo",
+      "type": "motoko"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    }
+  },
+  "version": 1
+}

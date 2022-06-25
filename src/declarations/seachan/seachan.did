@@ -1,0 +1,263 @@
+type UserType = 
+ record {
+   icpBalance: float64;
+   id: nat32;
+   nftCollection: vec NftCollectionType;
+   "principal": text;
+   principalSource: text;
+   registrationTimeStamp: int;
+   role: text;
+   userName: text;
+ };
+type UserId = nat32;
+type Trie = 
+ variant {
+   branch: Branch;
+   "empty";
+   leaf: Leaf;
+ };
+type PostType__1 = 
+ record {
+   boardAbbreviation: text;
+   body: text;
+   fileCount: nat32;
+   fileExtension: text;
+   fileName: text;
+   filePath: text;
+   fileSize: nat32;
+   fileType: text;
+   id: nat32;
+   isLocked: bool;
+   isOp: bool;
+   isStickied: bool;
+   latestActivityTimeStamp: int;
+   ownerPrincipal: principal;
+   posterGuid: text;
+   replies: Trie;
+   replyCount: nat32;
+   reportCount: nat32;
+   subject: text;
+   timeStamp: int;
+   userName: text;
+   userNameColor: text;
+ };
+type PostType = 
+ record {
+   boardAbbreviation: text;
+   body: text;
+   fileCount: nat32;
+   fileExtension: text;
+   fileName: text;
+   filePath: text;
+   fileSize: nat32;
+   fileType: text;
+   id: nat32;
+   isLocked: bool;
+   isOp: bool;
+   isStickied: bool;
+   latestActivityTimeStamp: int;
+   ownerPrincipal: principal;
+   posterGuid: text;
+   replies: Trie;
+   replyCount: nat32;
+   reportCount: nat32;
+   subject: text;
+   timeStamp: int;
+   userName: text;
+   userNameColor: text;
+ };
+type NftCollectionType__1 = 
+ record {
+   canisterId: text;
+   description: text;
+   icon: text;
+   name: text;
+   standard: text;
+   tokens: vec NFTDetails;
+ };
+type NftCollectionType = 
+ record {
+   canisterId: text;
+   description: text;
+   icon: text;
+   name: text;
+   standard: text;
+   tokens: vec NFTDetails;
+ };
+type NFTDetails = 
+ record {
+   index: nat32;
+   url: text;
+ };
+type List = 
+ opt record {
+       record {
+         Key;
+         PostType;
+       };
+       List;
+     };
+type Leaf = 
+ record {
+   keyvals: AssocList;
+   size: nat;
+ };
+type Key = 
+ record {
+   hash: Hash;
+   key: nat32;
+ };
+type Id = nat32;
+type Hash = nat32;
+type Branch = 
+ record {
+   left: Trie;
+   right: Trie;
+   size: nat;
+ };
+type BoardType = 
+ record {
+   abbreviation: text;
+   allFileCount: nat32;
+   allFileSize: nat32;
+   forceAnonymity: bool;
+   gateToken: text;
+   gateTokenAmount: nat32;
+   gateType: text;
+   id: nat32;
+   isGated: bool;
+   isInDevelopment: bool;
+   isListed: bool;
+   isSfw: bool;
+   isShownInHeader: bool;
+   latestActivityTimeStamp: int;
+   name: text;
+   nextPost: nat32;
+   ownerPrincipal: principal;
+   postCount: nat32;
+   posts: Trie;
+   showFlags: bool;
+   textOnly: bool;
+   threadCount: nat32;
+   timeStamp: int;
+ };
+type BoardDescType = 
+ record {
+   abbreviation: text;
+   forceAnonymity: bool;
+   gateToken: text;
+   gateTokenAmount: nat32;
+   gateType: text;
+   id: nat32;
+   isGated: bool;
+   isInDevelopment: bool;
+   isListed: bool;
+   isSfw: bool;
+   isShownInHeader: bool;
+   latestActivityTimeStamp: int;
+   name: text;
+   showFlags: bool;
+   textOnly: bool;
+   threadCount: nat32;
+   timeStamp: int;
+ };
+type AssocList = 
+ opt record {
+       record {
+         Key;
+         PostType;
+       };
+       List;
+     };
+service : {
+  addUserNfts: (UserId, vec NftCollectionType__1) -> (opt UserType);
+  createBoard:
+   (record {
+      abbreviation: text;
+      forceAnonymity: bool;
+      gateToken: text;
+      gateTokenAmount: nat32;
+      gateType: text;
+      isGated: bool;
+      isInDevelopment: bool;
+      isListed: bool;
+      isSfw: bool;
+      isShownInHeader: bool;
+      name: text;
+      showFlags: bool;
+      textOnly: bool;
+    }) -> (opt BoardType);
+  createReply:
+   (record {
+      boardAbbreviation: text;
+      body: text;
+      fileExtension: text;
+      fileName: text;
+      filePath: text;
+      fileSize: nat32;
+      fileType: text;
+      isLocked: bool;
+      isStickied: bool;
+      posterGuid: text;
+      subject: text;
+      threadId: nat32;
+      userName: text;
+      userNameColor: text;
+    }) -> (opt PostType__1);
+  createThread:
+   (record {
+      boardAbbreviation: text;
+      body: text;
+      fileExtension: text;
+      fileName: text;
+      filePath: text;
+      fileSize: nat32;
+      fileType: text;
+      isLocked: bool;
+      isStickied: bool;
+      posterGuid: text;
+      subject: text;
+      userName: text;
+      userNameColor: text;
+    }) -> (opt PostType__1);
+  createUser: (principal, text, float64) -> (opt UserType);
+  deleteAllBoards: () -> () oneway;
+  deleteAllReplies: () -> () oneway;
+  deleteAllThreads: () -> () oneway;
+  deleteAllUsers: () -> () oneway;
+  deleteBoard: (text) -> () oneway;
+  deleteReplies: (text, nat32) -> () oneway;
+  deleteReply: (text, nat32, nat32) -> () oneway;
+  deleteThread: (text, nat32) -> () oneway;
+  deleteThreads: (text) -> () oneway;
+  findUserByPrincipal: (text) -> (opt UserType) query;
+  getCallerId: () -> (principal);
+  getCycleBalance: () -> (nat);
+  isUniqueAbbreviation: (text) -> (bool) query;
+  listBoardThreads: (text) -> (vec PostType__1);
+  listBoards: () -> (vec BoardDescType) query;
+  listHeaderBoards: () -> (vec BoardDescType) query;
+  listThreadPosts: (text, nat32) -> (vec opt PostType__1);
+  listUnListedBoards: () -> (vec BoardDescType) query;
+  listUsers: () -> (vec record {
+                          UserId;
+                          UserType;
+                        }) query;
+  makeMod: (UserId, text) -> (opt UserType);
+  principalToSubAccount: (principal) -> (vec nat8);
+  readBoard: (text) -> (opt BoardType) query;
+  readBoardCount: () -> (nat) query;
+  readBoardDesc: (text) -> (opt BoardDescType) query;
+  readListedBoardCount: () -> (nat) query;
+  readNextBoard: () -> (nat32) query;
+  readNextBoardPost: (text) -> (nat32) query;
+  readNextPost: (text) -> (nat32) query;
+  readNextUser: () -> (UserId) query;
+  readUnlistedBoardCount: () -> (nat) query;
+  readUserCount: () -> (nat) query;
+  reportReply: (nat32, nat32, bool, text, text) -> () oneway;
+  reportThread: (nat32, text, text) -> () oneway;
+  updateBoard: (text, BoardType) -> () oneway;
+  updateLatestPost: (text, int) -> () oneway;
+  updateUserBalances: (Id, float64) -> (opt UserType);
+}
